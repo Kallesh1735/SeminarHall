@@ -1,4 +1,4 @@
- // src/App.jsx
+// src/App.jsx
 import React, { useEffect, useState } from "react";
 import { Link, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
@@ -89,34 +89,34 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* SINGLE HEADER - controlled here (remove other headers from pages) */}
-      <header className="glass-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div className="header-left" style={{ display: "flex", flexDirection: "column" }}>
-          <h1 style={{ margin: 0 }}>Seminar Hall Booking</h1>
+      {/* SINGLE HEADER */}
+      <header>
+        <div className="header-left">
+          <h1>Seminar Hall Booking</h1>
 
           {/* Show navigation when NOT on Home (so Home is a clean landing) */}
           {location.pathname !== "/" && (
-            <nav className="nav-links" style={{ marginTop: 8 }}>
-              <Link to="/rooms" style={{ marginRight: 10 }}>Rooms</Link>
-              <Link to="/my" style={{ marginRight: 10 }}>My Bookings</Link>
+            <nav className="nav-links">
+              <Link to="/rooms">Rooms</Link>
+              <Link to="/my">My Bookings</Link>
               <Link to="/admin">Admin</Link>
             </nav>
           )}
         </div>
 
-        <div className="header-right" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div className="header-right">
           <div className="bookings-badge">
-            <strong>Bookings:</strong> {totalBookings ?? "..."}
+            Bookings: <strong>{totalBookings ?? "..."}</strong>
           </div>
 
-          {/* Theme toggle */}
+          {/* Theme toggle - might be redundant if we enforce dark mode, but keeping for now */}
           <ThemeToggle />
 
           {/* If logged in show email + logout; if not logged in show nothing (signin/signup are on Home) */}
           {user ? (
-            <div className="auth-area" style={{ textAlign: "right" }}>
-              <div className="user-email" style={{ fontSize: 13 }}>{user.email}</div>
-              <button onClick={logout} className="btn-signout" style={{ marginTop: 6 }}>Sign Out</button>
+            <div className="auth-area">
+              <span className="user-email">{user.email}</span>
+              <button onClick={logout} className="btn-signout">Sign Out</button>
             </div>
           ) : (
             <div style={{ minWidth: 80 }} /> /* placeholder to keep header alignment */
@@ -125,7 +125,7 @@ export default function App() {
       </header>
 
       {/* ROUTES */}
-      <main style={{ marginTop: 18 }}>
+      <main>
         <Routes>
           <Route path="/" element={<Home />} />
 

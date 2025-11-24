@@ -1,4 +1,4 @@
- // src/pages/AdminSignUp.jsx
+// src/pages/AdminSignUp.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUpWithEmail, addDoc, collection, db } from "../firebase";
@@ -60,71 +60,70 @@ export default function AdminSignUp() {
   }
 
   return (
-    <div style={{ maxWidth: 480, margin: "40px auto", padding: 20 }}>
-      <h2>Create Admin Account</h2>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Create Admin Account</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 14 }}>
-        <div>
-          <label>Full name</label>
-          <input
-            type="text"
-            placeholder="Admin name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Full name</label>
+            <input
+              type="text"
+              placeholder="Admin name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              required
+            />
+          </div>
 
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="admin@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="admin@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-        <div>
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="min 6 characters"
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="min 6 characters"
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-        <div>
-          <label>Admin Secret Code</label>
-          <input
-            type="text"
-            placeholder="Enter admin secret"
-            value={adminCode}
-            onChange={(e) => setAdminCode(e.target.value)}
-            required
-            style={{ width: "100%", padding: 8, borderRadius: 8 }}
-          />
-        </div>
+          <div className="form-group">
+            <label>Admin Secret Code</label>
+            <input
+              type="text"
+              placeholder="Enter admin secret"
+              value={adminCode}
+              onChange={(e) => setAdminCode(e.target.value)}
+              required
+            />
+          </div>
 
-        {errorMsg && (
-          <div style={{ color: "crimson", fontSize: 13 }}>{errorMsg}</div>
-        )}
+          {errorMsg && (
+            <div className="text-center mb-4" style={{ color: "var(--danger)" }}>{errorMsg}</div>
+          )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{ padding: "10px", borderRadius: 8 }}
-        >
-          {loading ? "Creating..." : "Create Admin"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="btn-primary"
+            style={{ width: '100%' }}
+            disabled={loading}
+          >
+            {loading ? "Creating..." : "Create Admin"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

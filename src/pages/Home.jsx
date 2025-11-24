@@ -1,68 +1,67 @@
- // src/pages/Home.jsx
+// src/pages/Home.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
-    <div style={{ maxWidth: 980, margin: "28px auto", padding: 18 }}>
-      <div className="card" style={{ padding: 18 }}>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <div style={{ width: 64, height: 64, borderRadius: 10, background: "var(--card-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <img src="/mnt/data/95eb0017-c67e-4a88-813a-c2f3a32bb600.png" alt="logo" style={{ width: 52, height: 52, objectFit: "cover", borderRadius: 8 }} />
-          </div>
+    <div className="home-container" style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div className="card mb-4">
+        <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
+          {/* Logo placeholder if needed, or just remove */}
+          {/* <div className="logo-placeholder"></div> */}
 
           <div style={{ flex: 1 }}>
-            <h2 style={{ margin: 0 }}>Seminar Hall Booking</h2>
-            <p className="small" style={{ marginTop: 6, color: "var(--muted)" }}>
+            <h2>Seminar Hall Booking</h2>
+            <p>
               Reserve seminar halls & auditoriums quickly — admins approve requests.
             </p>
           </div>
 
-          <div style={{ display: "flex", gap: 8 }}>
-            <Link to="/signin"><button style={{ padding: "8px 12px", borderRadius: 8 }}>Sign In</button></Link>
-            <Link to="/signup"><button className="primary" style={{ padding: "8px 12px", borderRadius: 8 }}>Sign Up</button></Link>
+          <div className="flex gap-2">
+            <Link to="/signin"><button className="btn-ghost">Sign In</button></Link>
+            <Link to="/signup"><button className="btn-primary">Sign Up</button></Link>
+          </div>
+        </div>
+      </div>
+
+      <div className="room-grid mb-4">
+        <div className="card">
+          <h3>Admin</h3>
+          <p className="mb-4">Review and manage bookings</p>
+          <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
+            <li>Approve / Reject requests</li>
+            <li>Export booking CSV</li>
+            <li>Delete or edit bookings</li>
+          </ul>
+          <div className="flex gap-2" style={{ flexWrap: 'wrap' }}>
+            <Link to="/admin-signup"><button className="btn-primary">Admin Sign Up</button></Link>
+            <Link to="/signin"><button className="btn-ghost">Admin Sign In</button></Link>
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, marginTop: 18 }}>
-          <div className="card" style={{ padding: 16 }}>
-            <h3>Admin</h3>
-            <p className="small">Review and manage bookings</p>
-            <ul>
-              <li>Approve / Reject requests</li>
-              <li>Export booking CSV</li>
-              <li>Delete or edit bookings</li>
-            </ul>
-            <div style={{ marginTop: 12 }}>
-              <Link to="/admin-signup"><button className="primary">Admin Sign Up</button></Link>
-              <Link to="/signin" style={{ marginLeft: 8 }}><button>Admin Sign In</button></Link>
-            </div>
-          </div>
-
-          <div className="card" style={{ padding: 16 }}>
-            <h3>Student / Faculty / Staff</h3>
-            <p className="small">Book rooms for classes, seminars, and events</p>
-            <ul>
-              <li>See room availability</li>
-              <li>Create, edit, cancel bookings</li>
-              <li>View booking status (pending/approved/rejected)</li>
-            </ul>
-            <div style={{ marginTop: 12 }}>
-              <Link to="/signup"><button className="primary">Sign Up</button></Link>
-              <Link to="/signin" style={{ marginLeft: 8 }}><button>Sign In</button></Link>
-            </div>
+        <div className="card">
+          <h3>Student / Faculty / Staff</h3>
+          <p className="mb-4">Book rooms for classes, seminars, and events</p>
+          <ul style={{ paddingLeft: 20, marginBottom: 20 }}>
+            <li>See room availability</li>
+            <li>Create, edit, cancel bookings</li>
+            <li>View booking status</li>
+          </ul>
+          <div className="flex gap-2" style={{ flexWrap: 'wrap' }}>
+            <Link to="/signup"><button className="btn-primary">Sign Up</button></Link>
+            <Link to="/signin"><button className="btn-ghost">Sign In</button></Link>
           </div>
         </div>
+      </div>
 
-        <div className="card" style={{ marginTop: 18, padding: 16 }}>
-          <h3>How it works (quick)</h3>
-          <ol>
-            <li>Choose your role: Admin or Student/Faculty/Staff.</li>
-            <li>Sign up / sign in, then view rooms.</li>
-            <li>Create a booking — admin later approves or rejects it.</li>
-            <li>Track status from My Bookings.</li>
-          </ol>
-        </div>
+      <div className="card">
+        <h3>How it works (quick)</h3>
+        <ol style={{ paddingLeft: 20 }}>
+          <li>Choose your role: Admin or Student/Faculty/Staff.</li>
+          <li>Sign up / sign in, then view rooms.</li>
+          <li>Create a booking — admin later approves or rejects it.</li>
+          <li>Track status from My Bookings.</li>
+        </ol>
       </div>
     </div>
   );

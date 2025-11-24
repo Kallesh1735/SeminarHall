@@ -1,4 +1,4 @@
- // src/pages/SignIn.jsx
+// src/pages/SignIn.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signInWithEmail } from "../firebase";
@@ -27,45 +27,47 @@ export default function SignIn() {
   }
 
   return (
-    <div className="auth-card">
-      <h2>Sign In</h2>
-      <div className="subtitle">Access your dashboard</div>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Sign In</h2>
+        <div className="text-center mb-4 text-muted">Access your dashboard</div>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 8 }}>
-        <div className="form-row">
-          <label>Email</label>
-          <input
-            type="email"
-            required
-            placeholder="yourname@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              required
+              placeholder="yourname@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <div className="form-row">
-          <label>Password</label>
-          <input
-            type="password"
-            required
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        {errorMsg && <div className="form-error">{errorMsg}</div>}
+          {errorMsg && <div className="text-center mb-4" style={{ color: 'var(--danger)' }}>{errorMsg}</div>}
 
-        <div className="auth-actions">
-          <button className="primary" disabled={loading}>
-            {loading ? "Signing in…" : "Sign In"}
-          </button>
-        </div>
+          <div className="flex justify-between items-center">
+            <button className="btn-primary" style={{ width: '100%' }} disabled={loading}>
+              {loading ? "Signing in…" : "Sign In"}
+            </button>
+          </div>
 
-        <div className="auth-footer">
-          Don’t have an account? <Link to="/signup">Sign Up</Link>
-        </div>
-      </form>
+          <div className="text-center mt-4 text-muted" style={{ fontSize: '0.9rem' }}>
+            Don’t have an account? <Link to="/signup" style={{ color: 'var(--primary)' }}>Sign Up</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

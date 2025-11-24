@@ -1,4 +1,4 @@
- // src/components/ThemeToggle.jsx
+// src/components/ThemeToggle.jsx
 import React, { useEffect, useState } from "react";
 
 /*
@@ -86,14 +86,11 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
+      className="btn-ghost"
       style={{
-        padding: "8px 12px",
-        borderRadius: "10px",
         marginLeft: "12px",
-        cursor: "pointer",
-        border: "1px solid rgba(255,255,255,0.12)",
-        background: "var(--glass-strong)",
-        color: "var(--text-primary)"
+        padding: "0.5rem 1rem",
+        fontSize: "0.9rem"
       }}
       aria-label="Toggle theme"
       title="Toggle theme"

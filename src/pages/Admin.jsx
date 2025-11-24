@@ -1,4 +1,4 @@
- // src/pages/Admin.jsx
+// src/pages/Admin.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -58,7 +58,7 @@ export default function Admin() {
         // Query admins collection for this uid
         const q = query(collection(db, "admins"), where("uid", "==", u.uid));
 
-         const snap = await getDocs(q);
+        const snap = await getDocs(q);
         if (snap.empty) {
           // not an admin -> redirect to signin (or home)
           alert("Access denied: you are not an admin.");
@@ -161,7 +161,7 @@ export default function Admin() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `bookings_export_${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `bookings_export_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -169,77 +169,72 @@ export default function Admin() {
   }
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div className="mt-4">
       <h2>Admin — All Bookings</h2>
 
-      <div style={{ display: "flex", gap: 12, marginTop: 12, alignItems: "center", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <label style={{ fontSize: 13 }}>Filter date</label>
-          <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} />
+      <div className="flex gap-4 items-center mb-4" style={{ flexWrap: "wrap" }}>
+        <div className="flex gap-2 items-center">
+          <label style={{ marginBottom: 0 }}>Filter date</label>
+          <input type="date" value={filterDate} onChange={e => setFilterDate(e.target.value)} style={{ width: 'auto' }} />
         </div>
 
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div className="flex gap-2 items-center">
           <input
             placeholder="filter by email..."
             value={filterEmail}
             onChange={e => setFilterEmail(e.target.value)}
-            style={{ padding: "8px 10px", borderRadius: 8 }}
+            style={{ width: 'auto' }}
           />
         </div>
 
-        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
-          <button className="primary" onClick={loadAll} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
-          <button onClick={handleExport}>Export CSV</button>
+        <div className="flex gap-2" style={{ marginLeft: "auto" }}>
+          <button className="btn-primary" onClick={loadAll} disabled={loading}>{loading ? "Refreshing…" : "Refresh"}</button>
+          <button className="btn-ghost" onClick={handleExport}>Export CSV</button>
         </div>
       </div>
 
-      {loading && <div style={{ marginTop: 12 }}>Loading…</div>}
+      {loading && <div className="mb-4">Loading…</div>}
 
-      <div style={{ display: "grid", gap: 12, marginTop: 12 }}>
+      <div className="flex" style={{ flexDirection: 'column', gap: '1rem' }}>
         {(!filtered || filtered.length === 0) && !loading && <div className="text-muted">No bookings found.</div>}
 
         {(filtered || []).map(b => {
           const start = b.slot;
           const end = (b.slot || 0) + (b.duration || 1);
           const status = b.status || "pending";
+          let badgeClass = "badge-warning";
+          if (status === "approved") badgeClass = "badge-success";
+          if (status === "rejected") badgeClass = "badge-danger";
+
           return (
             <div key={b.id} className="card">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className="flex justify-between items-center" style={{ flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <div style={{ fontWeight: 700 }}>{b.roomName || b.roomId}</div>
-                  <div style={{ fontSize: 13, color: "#333" }}>{b.date} • {String(start).padStart(2,"0")}:00 - {String(end).padStart(2,"0")}:00</div>
+                  <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{b.roomName || b.roomId}</div>
+                  <div className="text-muted" style={{ fontSize: '0.9rem' }}>{b.date} • {String(start).padStart(2, "0")}:00 - {String(end).padStart(2, "0")}:00</div>
                 </div>
 
-                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                  <div style={{ fontSize: 13, color: "#475569", minWidth: 160 }}>
+                <div className="flex gap-4 items-center" style={{ flexWrap: 'wrap' }}>
+                  <div style={{ fontSize: '0.9rem', minWidth: 160 }}>
                     <div>{b.email || "—"}</div>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{b.name || "—"}</div>
+                    <div className="text-muted" style={{ fontSize: '0.8rem' }}>{b.name || "—"}</div>
                   </div>
 
-                  <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <div className="flex gap-2 items-center">
                     {/* Status badge */}
-                    <div style={{
-                      padding: "6px 8px",
-                      borderRadius: 8,
-                      fontSize: 13,
-                      fontWeight: 700,
-                      textTransform: "capitalize",
-                      background: status === "approved" ? "rgba(34,197,94,0.12)" : status === "rejected" ? "rgba(239,68,68,0.08)" : "rgba(250,204,21,0.08)",
-                      color: status === "approved" ? "#16a34a" : status === "rejected" ? "#ef4444" : "#b45309",
-                      border: "1px solid rgba(0,0,0,0.04)"
-                    }}>{status}</div>
+                    <div className={`badge ${badgeClass}`}>{status}</div>
 
                     {/* Approve / Reject only when pending or different */}
-                    <button className="primary" onClick={() => setBookingStatus(b.id, "approved")}>Approve</button>
-                    <button className="delete-btn" onClick={() => setBookingStatus(b.id, "rejected")}>Reject</button>
-                    <button className="delete-btn" onClick={() => handleDelete(b.id)}>Delete</button>
+                    <button className="btn-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }} onClick={() => setBookingStatus(b.id, "approved")}>Approve</button>
+                    <button className="btn-ghost" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => setBookingStatus(b.id, "rejected")}>Reject</button>
+                    <button className="btn-ghost" style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem' }} onClick={() => handleDelete(b.id)}>Delete</button>
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginTop: 8, fontSize: 13 }}>
-                {b.purpose && <div style={{ marginTop: 6 }}><strong>Purpose:</strong> {b.purpose}</div>}
-                <div style={{ color: "#666", marginTop: 6 }}>Created: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "—"}</div>
+              <div className="mt-4" style={{ fontSize: '0.9rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+                {b.purpose && <div className="mb-2"><strong>Purpose:</strong> {b.purpose}</div>}
+                <div className="text-muted">Created: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "—"}</div>
               </div>
             </div>
           );

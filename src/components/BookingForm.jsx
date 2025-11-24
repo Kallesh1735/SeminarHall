@@ -1,4 +1,4 @@
- // src/components/BookingForm.jsx
+// src/components/BookingForm.jsx
 import React, { useEffect, useState } from "react";
 import { bookingsCol, addDoc, getDocs, query, where } from "../firebase";
 
@@ -108,8 +108,8 @@ export default function BookingForm({
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(0,0,0,0.25)",
-          backdropFilter: "blur(3px)",
+          background: "rgba(0,0,0,0.6)",
+          backdropFilter: "blur(4px)",
           zIndex: 1000
         }}
         onClick={() => onClose && onClose(false)}
@@ -126,16 +126,18 @@ export default function BookingForm({
           width: "95%",
           maxWidth: 500,
           zIndex: 1001,
-          padding: 20
+          padding: '1.5rem',
+          maxHeight: '90vh',
+          overflowY: 'auto'
         }}
       >
-        <h3 style={{ marginTop: 0 }}>
-          {initialBooking ? "Edit booking" : "Book"}: {room.name}
+        <h3 style={{ marginTop: 0, marginBottom: '1.5rem' }}>
+          {initialBooking ? "Edit booking" : "Book"}: <span style={{ color: 'var(--primary)' }}>{room.name}</span>
         </h3>
 
-        <form onSubmit={handleSubmit} style={{ marginTop: 10 }}>
-          <div className="row">
-            <label style={{ minWidth: 90 }}>Date</label>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Date</label>
             <input
               type="date"
               value={date}
@@ -143,31 +145,35 @@ export default function BookingForm({
             />
           </div>
 
-          <div className="row">
-            <label style={{ minWidth: 90 }}>Start</label>
-            <select value={slot} onChange={(e) => setSlot(Number(e.target.value))}>
-              {slots.map((s) => (
-                <option key={s} value={s}>
-                  {slotLabel(s)}
-                </option>
-              ))}
-            </select>
+          <div className="flex gap-4 mb-4">
+            <div style={{ flex: 1 }}>
+              <label>Start</label>
+              <select value={slot} onChange={(e) => setSlot(Number(e.target.value))}>
+                {slots.map((s) => (
+                  <option key={s} value={s}>
+                    {slotLabel(s)}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <label style={{ marginLeft: 8 }}>Duration</label>
-            <select
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-            >
-              {Array.from({ length: maxDuration }, (_, i) => i + 1).map((d) => (
-                <option key={d} value={d}>
-                  {d} hour{d > 1 ? "s" : ""}
-                </option>
-              ))}
-            </select>
+            <div style={{ flex: 1 }}>
+              <label>Duration</label>
+              <select
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
+              >
+                {Array.from({ length: maxDuration }, (_, i) => i + 1).map((d) => (
+                  <option key={d} value={d}>
+                    {d} hour{d > 1 ? "s" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="row">
-            <label style={{ minWidth: 90 }}>Your name</label>
+          <div className="form-group">
+            <label>Your name</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -175,8 +181,8 @@ export default function BookingForm({
             />
           </div>
 
-          <div className="row">
-            <label style={{ minWidth: 90 }}>Email</label>
+          <div className="form-group">
+            <label>Email</label>
             <input
               type="email"
               value={email}
@@ -185,42 +191,48 @@ export default function BookingForm({
             />
           </div>
 
-          <div className="row">
-            <label style={{ minWidth: 90 }}>Purpose</label>
+          <div className="form-group">
+            <label>Purpose</label>
             <textarea
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="Purpose of booking (meeting, seminar, event...)"
-              style={{ width: "100%", height: 60 }}
+              style={{ width: "100%", height: 80, resize: 'vertical' }}
             />
           </div>
 
-          <div className="row" style={{ marginTop: 10 }}>
-            <button type="submit" className="primary" disabled={loading}>
+          <div className="flex gap-2 mt-4">
+            <button type="submit" className="btn-primary" disabled={loading} style={{ flex: 1 }}>
               {loading
                 ? "Working…"
                 : initialBooking
-                ? "Create & replace"
-                : "Confirm Booking"}
+                  ? "Create & replace"
+                  : "Confirm Booking"}
             </button>
             <button
               type="button"
               onClick={() => onClose && onClose(false)}
-              className="ghost"
-              style={{ marginLeft: 8 }}
+              className="btn-ghost"
             >
               Close
             </button>
           </div>
 
-          <div style={{ marginTop: 16 }}>
-            <strong>Existing bookings for {date || "(choose a date)"}:</strong>
-            <ul style={{ paddingLeft: 0 }} className="booking-list">
+          <div className="mt-4 pt-4" style={{ borderTop: '1px solid var(--border-color)' }}>
+            <strong style={{ fontSize: '0.9rem' }}>Existing bookings for {date || "(choose a date)"}:</strong>
+            <ul style={{ paddingLeft: 0, marginTop: '0.5rem' }}>
               {existing.length === 0 && (
-                <li className="text-muted">No bookings</li>
+                <li className="text-muted" style={{ fontSize: '0.85rem' }}>No bookings</li>
               )}
               {existing.map((b) => (
-                <li key={b.id} className="booking-card">
+                <li key={b.id} style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  padding: '0.5rem',
+                  borderRadius: '8px',
+                  marginBottom: '0.5rem',
+                  fontSize: '0.85rem',
+                  color: 'var(--text-muted)'
+                }}>
                   {String(b.slot).padStart(2, "0")}:00 -{" "}
                   {String((b.slot || 0) + (b.duration || 1)).padStart(
                     2,

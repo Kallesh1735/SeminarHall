@@ -1,4 +1,4 @@
- // src/pages/SignUp.jsx
+// src/pages/SignUp.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { signUpWithEmail } from "../firebase";
@@ -40,57 +40,59 @@ export default function SignUp() {
   }
 
   return (
-    <div className="auth-card">
-      <h2>Create account</h2>
-      <div className="subtitle">Sign up and reserve rooms</div>
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Create account</h2>
+        <div className="text-center mb-4 text-muted">Sign up and reserve rooms</div>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 8 }}>
-        <div className="form-row">
-          <label>Full name</label>
-          <input
-            type="text"
-            required
-            placeholder="Your full name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Full name</label>
+            <input
+              type="text"
+              required
+              placeholder="Your full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
 
-        <div className="form-row">
-          <label>Email</label>
-          <input
-            type="email"
-            required
-            placeholder="you@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
 
-        <div className="form-row">
-          <label>Password</label>
-          <input
-            type="password"
-            required
-            minLength={6}
-            placeholder="Choose a password (min 6 chars)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              required
+              minLength={6}
+              placeholder="Choose a password (min 6 chars)"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-        {errorMsg && <div className="form-error">{errorMsg}</div>}
+          {errorMsg && <div className="text-center mb-4" style={{ color: 'var(--danger)' }}>{errorMsg}</div>}
 
-        <div className="auth-actions">
-          <button className="primary" disabled={loading}>
-            {loading ? "Creating account…" : "Sign Up"}
-          </button>
-        </div>
+          <div className="flex justify-between items-center">
+            <button className="btn-primary" style={{ width: '100%' }} disabled={loading}>
+              {loading ? "Creating account…" : "Sign Up"}
+            </button>
+          </div>
 
-        <div className="auth-footer">
-          Already have an account? <Link to="/signin">Sign in</Link>
-        </div>
-      </form>
+          <div className="text-center mt-4 text-muted" style={{ fontSize: '0.9rem' }}>
+            Already have an account? <Link to="/signin" style={{ color: 'var(--primary)' }}>Sign in</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

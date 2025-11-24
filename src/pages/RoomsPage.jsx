@@ -1,4 +1,4 @@
- // src/pages/RoomsPage.jsx
+// src/pages/RoomsPage.jsx
 import React, { useEffect, useState } from "react";
 import { roomsCol, bookingsCol, getDocs, query, where } from "../firebase";
 import BookingForm from "../components/BookingForm";
@@ -43,59 +43,65 @@ export default function RoomsPage() {
   }
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div className="mt-4">
       <h2>Rooms</h2>
 
-      <div style={{ marginTop: 8 }}>
-        <label>
-          Preview date:{" "}
+      <div className="flex gap-4 items-center mb-4">
+        <label className="mb-0">Preview date:</label>
+        <div className="flex gap-2">
           <input
+            type="date"
             value={dateForPreview}
             onChange={e => setDateForPreview(e.target.value)}
-            placeholder="2025-11-21"
+            style={{ width: 'auto' }}
           />
-        </label>
-        <button style={{ marginLeft: 8 }} onClick={() => loadBookingsForDate(dateForPreview)}>
-          Load bookings
-        </button>
+          <button className="btn-ghost" onClick={() => loadBookingsForDate(dateForPreview)}>
+            Load bookings
+          </button>
+        </div>
       </div>
 
       {loading ? <div>Loading rooms…</div> : null}
 
-      {/* room grid uses CSS class from index.css */}
       <div className="room-grid">
         {rooms.map(r => (
-          <div key={r.id} className="card">
+          <div key={r.id} className="room-card">
             <h3>{r.name}</h3>
-            <div className="muted">{r.type} • capacity: {r.capacity}</div>
+            <div className="text-muted mb-4">{r.type} • capacity: {r.capacity}</div>
 
-            <div className="features" style={{ marginTop: 8 }}>
+            <div className="mb-4" style={{ fontSize: '0.9rem' }}>
               <strong>Features:</strong> {(r.features || []).join(", ")}
             </div>
 
-            <div style={{ marginTop: 10 }}>
-              <button className="primary" onClick={() => setSelectedRoom(r)}>Book / View</button>
+            <div className="flex gap-2 mb-4">
+              <button className="btn-primary" onClick={() => setSelectedRoom(r)}>Book / View</button>
               <button
+                className="btn-ghost"
                 onClick={() => {
                   const today = new Date().toISOString().slice(0, 10);
                   setSelectedRoom(r);
                   setDateForPreview(today);
                   loadBookingsForDate(today);
                 }}
-                style={{ marginLeft: 8 }}
               >
                 Quick today
               </button>
             </div>
 
-            <div className="booking-list">
-              <strong>Bookings on {dateForPreview || "(select a date)"}</strong>
-              <ul style={{ paddingLeft: 0 }}>
+            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+              <strong style={{ fontSize: '0.9rem' }}>Bookings on {dateForPreview || "(select a date)"}</strong>
+              <ul className="mt-4" style={{ paddingLeft: 0 }}>
                 {(roomBookings[r.id] || []).length === 0 ? (
-                  <li className="text-muted">No bookings</li>
+                  <li className="text-muted" style={{ fontSize: '0.85rem' }}>No bookings</li>
                 ) : (
                   (roomBookings[r.id] || []).map(b => (
-                    <li key={b.id} className="booking-card">
+                    <li key={b.id} style={{
+                      background: 'rgba(255,255,255,0.03)',
+                      padding: '0.5rem',
+                      borderRadius: '8px',
+                      marginBottom: '0.5rem',
+                      fontSize: '0.85rem'
+                    }}>
                       {String(b.slot).padStart(2, "0")}:00 - {String(b.slot + (b.duration || 1)).padStart(2, "0")}:00 — {b.name}
                     </li>
                   ))

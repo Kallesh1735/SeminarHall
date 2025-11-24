@@ -1,4 +1,4 @@
- // src/pages/MyBookings.jsx
+// src/pages/MyBookings.jsx
 import React, { useEffect, useState } from "react";
 import { bookingsCol, getDocs, query, where, deleteDoc, doc, onAuthChanged } from "../firebase";
 
@@ -53,75 +53,63 @@ export default function MyBookings() {
   // status -> badge style
   function StatusBadge({ status }) {
     const s = (status || "pending").toLowerCase();
-    const base = {
-      padding: "6px 8px",
-      borderRadius: 8,
-      fontSize: 13,
-      fontWeight: 700,
-      textTransform: "capitalize",
-      minWidth: 88,
-      textAlign: "center"
-    };
-    if (s === "approved") {
-      return <div style={{ ...base, background: "rgba(34,197,94,0.12)", color: "#16a34a", border: "1px solid rgba(34,197,94,0.06)" }}>Approved</div>;
-    }
-    if (s === "rejected") {
-      return <div style={{ ...base, background: "rgba(239,68,68,0.08)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.06)" }}>Rejected</div>;
-    }
-    // pending
-    return <div style={{ ...base, background: "rgba(250,204,21,0.08)", color: "#b45309", border: "1px solid rgba(0,0,0,0.04)" }}>Pending</div>;
+    let badgeClass = "badge-warning";
+    if (s === "approved") badgeClass = "badge-success";
+    if (s === "rejected") badgeClass = "badge-danger";
+
+    return <div className={`badge ${badgeClass}`}>{s}</div>;
   }
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div className="mt-4">
       <h2>My Bookings</h2>
 
-      <div style={{ marginBottom: 12, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+      <div className="flex gap-4 items-center mb-4" style={{ flexWrap: "wrap" }}>
         <input
           placeholder="your@email.com"
           value={email}
           onChange={e => setEmail(e.target.value)}
-          style={{ padding: "8px 10px", borderRadius: 8, minWidth: 260 }}
+          style={{ width: 'auto', minWidth: 260 }}
         />
-        <button onClick={loadMyBookings} className="primary" disabled={loading}>
+        <button onClick={loadMyBookings} className="btn-primary" disabled={loading}>
           {loading ? "Loading…" : "Load my bookings"}
         </button>
 
-        <div style={{ marginLeft: "auto", color: "#6b7280", fontSize: 13 }}>
+        <div className="text-muted" style={{ marginLeft: "auto", fontSize: '0.85rem' }}>
           Tip: approved bookings are confirmed by admin.
         </div>
       </div>
 
       {!userChecked && <div>Checking sign-in status…</div>}
 
-      <div style={{ display: "grid", gap: 12 }}>
+      <div className="flex" style={{ flexDirection: 'column', gap: '1rem' }}>
         {bookings.length === 0 && !loading && <div className="text-muted">No bookings found.</div>}
 
         {bookings.map(b => (
           <div key={b.id} className="card">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+            <div className="flex justify-between items-center gap-4" style={{ flexWrap: 'wrap' }}>
               <div>
-                <div style={{ fontWeight: 700 }}>{b.roomName || b.roomId}</div>
-                <div style={{ fontSize: 13, color: "#333" }}>
-                  {b.date} • {String(b.slot).padStart(2,"0")}:00 - {String((b.slot || 0) + (b.duration || 1)).padStart(2,"0")}:00
+                <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>{b.roomName || b.roomId}</div>
+                <div className="text-muted" style={{ fontSize: '0.9rem' }}>
+                  {b.date} • {String(b.slot).padStart(2, "0")}:00 - {String((b.slot || 0) + (b.duration || 1)).padStart(2, "0")}:00
                 </div>
               </div>
 
-              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+              <div className="flex gap-4 items-center">
                 <StatusBadge status={b.status} />
-                <div style={{ textAlign: "right", fontSize: 13, color: "#475569" }}>
+                <div style={{ textAlign: "right", fontSize: '0.9rem' }}>
                   <div>{b.email || "—"}</div>
-                  <div style={{ fontSize: 12, color: "#6b7280", marginTop: 4 }}>{b.name || "—"}</div>
+                  <div className="text-muted" style={{ fontSize: '0.8rem' }}>{b.name || "—"}</div>
                 </div>
               </div>
             </div>
 
-            <div style={{ marginTop: 8 }}>
-              {b.purpose && <div style={{ marginTop: 6 }}><strong>Purpose:</strong> {b.purpose}</div>}
-              <div style={{ color: "#666", marginTop: 6 }}>Created: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "—"}</div>
+            <div className="mt-4" style={{ fontSize: '0.9rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+              {b.purpose && <div className="mb-2"><strong>Purpose:</strong> {b.purpose}</div>}
+              <div className="text-muted">Created: {b.createdAt ? new Date(b.createdAt).toLocaleString() : "—"}</div>
 
-              <div style={{ marginTop: 10, display: "flex", gap: 8 }}>
-                <button className="delete-btn" onClick={() => handleCancel(b.id)}>Cancel booking</button>
+              <div className="mt-4 flex gap-2">
+                <button className="btn-ghost" style={{ color: 'var(--danger)', borderColor: 'var(--danger)' }} onClick={() => handleCancel(b.id)}>Cancel booking</button>
               </div>
             </div>
           </div>
