@@ -1,5 +1,4 @@
-// src/App.jsx
-import React, { useEffect, useState } from "react";
+ import React, { useEffect, useState } from "react";
 import { Link, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -9,18 +8,15 @@ import Admin from "./pages/Admin";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import AdminSignUp from "./pages/AdminSignUp";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import ThemeToggle from "./components/ThemeToggle";
 
 import {
   bookingsCol,
-  getDocs as getDocsFirestore,
+  getDocs,
   onAuthChanged,
-  signOutUser,
-  db,
-  collection,
-  query,
-  where
+  signOutUser
 } from "./firebase";
 
 export default function App() {
@@ -30,11 +26,11 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [totalBookings, setTotalBookings] = useState(null);
 
-  // Listen for auth changes (keeps user state in sync)
+  /* ---------- AUTH STATE ---------- */
   useEffect(() => {
     const unsub = onAuthChanged((u) => {
       if (u) {
-        setUser({ email: u.email, uid: u.uid });
+        setUser({ uid: u.uid, email: u.email });
       } else {
         setUser(null);
       }
@@ -42,60 +38,45 @@ export default function App() {
     return () => unsub();
   }, []);
 
-  // Auto-redirect when a signed-in user lands on Home (/)
+  /* ---------- BOOKING COUNT (AUTH ONLY) ---------- */
   useEffect(() => {
-    if (!user || location.pathname !== "/") return;
+    if (!user) {
+      setTotalBookings(null);
+      return;
+    }
 
-    (async () => {
+    async function loadCount() {
       try {
-        const q = query(collection(db, "admins"), where("uid", "==", user.uid));
-        const snap = await getDocsFirestore(q);
-        if (!snap.empty) {
-          navigate("/admin", { replace: true });
-        } else {
-          navigate("/rooms", { replace: true });
-        }
-      } catch (err) {
-        console.warn("Auto-redirect admin check failed:", err);
-        navigate("/rooms", { replace: true });
-      }
-    })();
-  }, [user, location.pathname, navigate]);
-
-  // fetch total bookings count (for header badge)
-  useEffect(() => {
-    (async () => {
-      try {
-        const snap = await getDocsFirestore(bookingsCol);
+        const snap = await getDocs(bookingsCol);
         setTotalBookings(snap.size);
       } catch (err) {
-        console.error("Failed to fetch booking count", err);
+        console.error("Booking count fetch failed:", err);
       }
-    })();
-  }, []);
+    }
 
-  // Sign out and return to landing page — robust for both admin & users
+    loadCount();
+  }, [user]);
+
+  /* ---------- SIGN OUT ---------- */
   async function logout() {
     try {
       await signOutUser();
     } catch (err) {
-      console.warn("Sign out failed (but will still redirect):", err);
+      console.warn("Sign out failed:", err);
     } finally {
-      // always navigate back to Home after sign out attempt
-      try { navigate("/"); } catch (e) { /* ignore */ }
-      alert("Signed out");
+      setUser(null);
+      navigate("/", { replace: true });
     }
   }
 
   return (
     <div className="app-container">
-      {/* SINGLE HEADER */}
+      {/* HEADER */}
       <header>
         <div className="header-left">
           <h1>Seminar Hall Booking</h1>
 
-          {/* Show navigation when NOT on Home (so Home is a clean landing) */}
-          {location.pathname !== "/" && (
+          {location.pathname !== "/" && user && (
             <nav className="nav-links">
               <Link to="/rooms">Rooms</Link>
               <Link to="/my">My Bookings</Link>
@@ -105,21 +86,23 @@ export default function App() {
         </div>
 
         <div className="header-right">
-          <div className="bookings-badge">
-            Bookings: <strong>{totalBookings ?? "..."}</strong>
-          </div>
+          {user && (
+            <div className="bookings-badge">
+              Bookings: <strong>{totalBookings ?? "..."}</strong>
+            </div>
+          )}
 
-          {/* Theme toggle - might be redundant if we enforce dark mode, but keeping for now */}
           <ThemeToggle />
 
-          {/* If logged in show email + logout; if not logged in show nothing (signin/signup are on Home) */}
           {user ? (
             <div className="auth-area">
               <span className="user-email">{user.email}</span>
-              <button onClick={logout} className="btn-signout">Sign Out</button>
+              <button onClick={logout} className="btn-signout">
+                Sign Out
+              </button>
             </div>
           ) : (
-            <div style={{ minWidth: 80 }} /> /* placeholder to keep header alignment */
+            <div style={{ minWidth: 80 }} />
           )}
         </div>
       </header>
@@ -147,7 +130,16 @@ export default function App() {
             }
           />
 
-          <Route path="/admin" element={<Admin />} />
+          {/* Admin page does its own admin verification */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute user={user}>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin-signup" element={<AdminSignUp />} />

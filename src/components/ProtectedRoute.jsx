@@ -1,11 +1,19 @@
-// src/components/ProtectedRoute.jsx
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 export default function ProtectedRoute({ user, children }) {
+  const location = useLocation();
+
+  // If auth state not ready or user signed out
   if (!user) {
-    // user not logged in → send to SignIn
-    return <Navigate to="/signin" replace />;
+    return (
+      <Navigate
+        to="/signin"
+        replace
+        state={{ from: location.pathname }}
+      />
+    );
   }
+
   return children;
 }
